@@ -2,8 +2,7 @@ package com.example.appevents.network
 
 
 import com.example.appevents.commun.*
-import com.example.appevents.model.SearchResponseModel
-import com.example.appevents.model.TokenResponseModel
+import com.example.appevents.model.*
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -23,7 +22,13 @@ interface ApiService{
     fun getEventsList(
         @Header("Authorization") authorization:String,
         @Header("x-api-key") apiKey:String
-    ):Call<SearchResponseModel>
+    ):Call<List<EventoDto>>
+
+    @GET(SEARCH_TYPE_SUFFIX)
+    fun getTypeList(
+        @Header("Authorization") authorization:String,
+        @Header("x-api-key") apiKey:String
+    ):Call<List<TipoEventoDto>>
 
     companion object{
         val instanceAuth: ApiService by lazy {

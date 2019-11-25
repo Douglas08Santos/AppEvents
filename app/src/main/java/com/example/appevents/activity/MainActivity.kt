@@ -7,24 +7,28 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appevents.R
+import com.example.appevents.adapter.EventsListAdapter
 import com.example.appevents.commun.*
 import com.example.appevents.commun.PreferenceHelper.edit
-import com.example.appevents.fragment.FragmentEventsList
 import com.example.appevents.model.EventoDto
 import com.example.appevents.model.TokenResponseModel
 import com.example.appevents.network.ApiService
 import com.example.appevents.repository.SQLiteRepository
+import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
-
+    var TAG = "DouglasA"
     var eventos: MutableList<EventoDto>? = null
-    private var eventoRepository:SQLiteRepository? = null
+    private var eventoRepository = SQLiteRepository(this)
+    var adapter:EventsListAdapter? = null
 
 
 
@@ -35,19 +39,33 @@ class MainActivity : AppCompatActivity() {
         val prefs = PreferenceHelper.defaultPrefs(this)
         //cleanPrefs()
         val accessToken: String? = prefs[PREF_API_ACCESS_TOKEN]
-
+        Log.e(TAG, "check token")
         if (accessToken.isNullOrEmpty()) {
+            Log.e(TAG, "null token")
             getToken()
+        }else{
+            startService(Intent(this, MyIntentService::class.java))
         }
-        Log.e("Evento1", "criando service")
-        startService(Intent(this,
-            MyIntentService::class.java))
-        Log.e("Evento12", "criado service")
-        eventoRepository = SQLiteRepository(this)
-        addEvent()
+        //updateList()
+        //initRecyclerView()
 
-        updateList()
+    }
 
+    private fun initRecyclerView() {
+        rvEventsList.adapter = adapter
+        val layoutManager = LinearLayoutManager(this)
+        rvEventsList.layoutManager = layoutManager
+    }
+
+    private fun list(eventos:MutableList<EventoDto>){
+        this.eventos = eventos
+        adapter = EventsListAdapter(eventos)
+
+        rvEventsList.adapter = adapter
+    }
+
+    fun updateList(){
+        eventoRepository?.list { list(it) }
     }
 
     fun cleanPrefs(){
@@ -63,7 +81,7 @@ class MainActivity : AppCompatActivity() {
     /*
             Configurações do actionBar
      */
-    //Criação
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.navigation, menu)
         return true
@@ -79,39 +97,33 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show()
             }
             R.id.navigation_notifications -> {
-                var transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragmentContainer, FragmentEventsList())
-                transaction.addToBackStack(null)
-                transaction.commit()
-                return true
+                initRecyclerView()
+                updateList()
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun list(eventos:MutableList<EventoDto>){
-        this.eventos  = eventos
-    }
 
-    fun updateList(){
-        eventoRepository?.list { list(it) }
-    }
 
     private fun getToken() {
+        var TAG = "DouglasAA"
+        Log.e(TAG, "Activity get token")
+
         val tokenCall = ApiService.instanceAuth.getToken(CLIENT_ID,
                     CLIENT_SECRET, GRANT_TYPE)
         tokenCall.enqueue(object :Callback<TokenResponseModel>{
             override fun onFailure(call: Call<TokenResponseModel>, t: Throwable) {
-                Toast.makeText(this@MainActivity, getString(R.string.handle_api_token_error),
-                    Toast.LENGTH_LONG).show()
+                Log.e(TAG, "onFail get token: ${t.message}")
             }
 
             override fun onResponse(
                 call: Call<TokenResponseModel>,
                 response: Response<TokenResponseModel>
             ) {
+                Log.e(TAG, "on Success")
                 val prefs = PreferenceHelper.defaultPrefs(applicationContext)
-                Log.e("token_acess", response.body()?.accessToken)
+                Log.e(TAG, response.body()?.accessToken.toString())
                 prefs[PREF_API_ACCESS_TOKEN] = response.body()?.accessToken.toString()
                 prefs[PREF_API_TOKEN_TYPE] = response.body()?.tokenType.toString()
 
@@ -121,32 +133,14 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+
+
     }
 
-    fun addEvent(){
-        for(i in 0..10){
-            var id = i
-            val titulo = "titulo " + i.toString()
-            val descricao = "descricao" + i.toString()
-            val inicioEvento = i*5
-            val fimEvento = i*6
-            val localizacao = "localizacao" + i.toString()
-            val latLocalizacao = i*7
-            val lngLocalizacao = i*8
-            val cargaHoraria = i*9
-            val qtdVagas = i*10
-            val idTipoEvento = i*11
-
-            var evento = EventoDto(id, titulo, descricao, inicioEvento, fimEvento, localizacao,
-                latLocalizacao, lngLocalizacao, cargaHoraria, qtdVagas, idTipoEvento)
-
-            eventos?.add(evento)
-        }
-    }
 
 }
 
-private operator fun SharedPreferences.set(tokenType: String, value: String) {
+operator fun SharedPreferences.set(tokenType: String, value: String) {
     when (value) {
         is String? -> edit({it.putString(tokenType, value) })
         else -> throw UnsupportedOperationException("Not yet implemented")

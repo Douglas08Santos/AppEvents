@@ -4,4 +4,4 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class SearchResponseModel(val responseEvent: List<EventoDto>):Parcelable
+data class SearchTypeResponseModel(val responseType: List<TipoEventoDto>): Parcelable

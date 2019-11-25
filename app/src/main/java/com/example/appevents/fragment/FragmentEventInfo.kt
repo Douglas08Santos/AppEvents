@@ -25,30 +25,21 @@ class FragmentEventInfo:Fragment() {
         val titulo = view.findViewById<TextView>(R.id.txtEventoTitulo)
         val descricao = view.findViewById<TextView>(R.id.txtEventoDescricao)
         val inicio = view.findViewById<TextView>(R.id.txtEventoInicio)
-        val fim = view.findViewById<TextView>(R.id.txtEventoFim)
         val local = view.findViewById<TextView>(R.id.txtEventoLocal)
         val carga = view.findViewById<TextView>(R.id.txtEventoCarga)
         val qtdvagas = view.findViewById<TextView>(R.id.txtEventoQtdVagas)
+        val tipo = view.findViewById<TextView>(R.id.txtEventoTipo)
 
-        val favbutton = view.findViewById<Button>(R.id.btnFav)
         val activity = activity as MainActivity?
         val evento = activity!!.eventos!![eventIdOnList]
-        //Favorite Button
 
-        favbutton.setOnClickListener {
-           if (evento.favorite == 1){
-               evento.favorite = 0
-           }else{
-               evento.favorite = 1
-           }
-        }
         titulo.text = evento!!.titulo
         descricao.text = evento.descricao
         inicio.text = evento.inicioEvento.toString()
-        fim.text = evento.fimEvento.toString()
         local.text = evento.localizacao
         carga.text = evento.cargaHoraria.toString()
         qtdvagas.text = evento.qtdVagas.toString()
+        tipo.text = evento.tipo
 
         return view
     }

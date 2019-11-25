@@ -10,11 +10,10 @@ class EventoDto(
     @SerializedName("id-evento") var id: Int,
     val titulo:String,
     val descricao:String,
-    @SerializedName("inicio-evento") val inicioEvento:Int,
-    @SerializedName("fim-evento") val fimEvento:Int,
+    @SerializedName("inicio-evento") val inicioEvento:Long,
     @SerializedName("localizacao") val localizacao:String,
-    @SerializedName("lat-localizacao") val latLocalizacao:Int,
-    @SerializedName("lng-localizacao") val lngLocalizacao:Int,
+    @SerializedName("lat-localizacao") val latLocalizacao:Float,
+    @SerializedName("lng-localizacao") val lngLocalizacao:Float,
     @SerializedName("carga-horaria") val cargaHoraria:Int,
     @SerializedName("quantidade-vagas") val qtdVagas:Int,
     @SerializedName("id-tipo-evento") val idTipoEvento:Int
@@ -22,5 +21,8 @@ class EventoDto(
 ):Parcelable{
 
 
-    var favorite:Int = 0
+//    @IgnoredOnParcel
+//    var favorite:Int = 0
+    @IgnoredOnParcel
+    var tipo:String = ""
 }

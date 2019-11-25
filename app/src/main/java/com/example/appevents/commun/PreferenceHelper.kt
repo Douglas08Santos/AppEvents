@@ -21,7 +21,7 @@ object PreferenceHelper {
     /**
      * puts a key value pair in shared prefs if doesn't exists, otherwise updates value on given [key]
      */
-    private operator fun SharedPreferences.set(tokenType: String, value: Any?) {
+    operator fun SharedPreferences.set(tokenType: String, value: Any?) {
         when (value) {
             is String? -> edit({ it.putString(tokenType, value) })
             is Int -> edit({ it.putInt(tokenType, value) })
@@ -37,7 +37,7 @@ object PreferenceHelper {
      * [T] is the type of value
      * @param defaultValue optional default value - will take null for strings, false for bool and -1 for numeric values if [defaultValue] is not specified
      */
-    private inline operator fun <reified T : Any> SharedPreferences.get(key: String,
+    inline operator fun <reified T : Any> SharedPreferences.get(key: String,
                                                                         defaultValue: T? = null): T?{
         return when (T::class) {
             kotlin.String::class -> getString(key, defaultValue as? String) as T?

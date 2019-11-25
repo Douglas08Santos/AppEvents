@@ -13,8 +13,7 @@ import com.example.appevents.fragment.FragmentEventInfo
 import com.example.appevents.model.EventoDto
 
 class EventsListAdapter(
-    private val eventos:List<EventoDto>,
-    private val fragmentManager: FragmentManager
+    private val eventos:List<EventoDto>
 ): RecyclerView.Adapter<EventsListAdapter.VH>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
@@ -42,12 +41,7 @@ class EventsListAdapter(
             if (position != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
                 when (view.id) {
                     R.id.btnItemDescricao -> {
-                        val transaction = fragmentManager.beginTransaction()
-                        val fragment = FragmentEventInfo()
-                        fragment.setEventIdOnList(position)
-                        transaction.replace(R.id.fragmentContainer, fragment as Fragment)
-                        transaction.addToBackStack(null)
-                        transaction.commit()
+
                     }
                 }
             }

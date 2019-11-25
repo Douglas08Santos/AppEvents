@@ -7,7 +7,10 @@ import android.util.Log
 import android.widget.Toast
 import com.example.appevents.R
 import com.example.appevents.commun.*
-import com.example.appevents.model.SearchResponseModel
+import com.example.appevents.model.EventoDto
+import com.example.appevents.model.SearchEventResponseModel
+import com.example.appevents.model.SearchTypeResponseModel
+import com.example.appevents.model.TipoEventoDto
 import com.example.appevents.network.ApiService
 import com.example.appevents.repository.SQLiteRepository
 import retrofit2.Call
@@ -17,45 +20,80 @@ import retrofit2.Response
 
 class MyIntentService:IntentService("ServiceEvento") {
     private var eventoRepository: SQLiteRepository? = null
-
+    private var TAG = "DouglasS"
     override fun onHandleIntent(intent: Intent?) {
-        Log.e("Evento13", "no service")
         eventoRepository = SQLiteRepository(this)
         getEvento()
     }
 
     private fun getEvento() {
-        //eventoRepository?.cleanTables()
-        if (!Util.isNetworkAvailable()){
-            Util.makeToast(this,
-                getString(R.string.internet_connection_error))
-        }
+        eventoRepository?.cleanTables()
+        Log.e(TAG,"get Evento")
 
         val prefs = PreferenceHelper.defaultPrefs(this)
         val accessToken: String? = prefs[PREF_API_ACCESS_TOKEN]
-        val searchCall = ApiService.instanceGet
+        Log.e(TAG, accessToken)
+        val searchEventCall = ApiService.instanceGet
             .getEventsList(
                 "bearer $accessToken", "$X_API_KEY")
+        val searchTypeCall = ApiService.instanceGet
+            .getTypeList(
+                "bearer $accessToken", "$X_API_KEY")
 
-        searchCall.enqueue(object : Callback<SearchResponseModel> {
-            override fun onFailure(call: Call<SearchResponseModel>, t: Throwable) {
+        //Get events of API
+        searchEventCall.enqueue(object : Callback<List<EventoDto>> {
 
-                Toast.makeText(applicationContext, getString(R.string.handle_api_token_error),
-                    Toast.LENGTH_LONG)
-                    .show()
+            override fun onFailure(call: Call<List<EventoDto>>, t: Throwable) {
+                Log.e(TAG,
+                    "get evento on fail${t.message.toString()}")
             }
 
-            override fun onResponse(call: Call<SearchResponseModel>,
-                                    response: Response<SearchResponseModel>) {
-                var eventos = response.body()?.responseEvent
+            override fun onResponse(
+                call: Call<List<EventoDto>>,
+                response: Response<List<EventoDto>>
+            ) {
+                var eventos = response.body()
 
                 for (evento in eventos!! ){
+                    evento.tipo = ""
+                    Log.e(TAG, evento.id.toString())
+                    Log.e(TAG, evento.titulo)
+                    Log.e(TAG, evento.descricao)
+                    Log.e(TAG, evento.inicioEvento.toString())
+                    Log.e(TAG, evento.localizacao)
+                    Log.e(TAG, evento.latLocalizacao.toString())
+                    Log.e(TAG, evento.lngLocalizacao.toString())
+                    Log.e(TAG, evento.cargaHoraria.toString())
+                    Log.e(TAG, evento.qtdVagas.toString())
+                    Log.e(TAG, evento.idTipoEvento.toString())
                     eventoRepository?.save(evento)
                 }
-                Log.d("eventos",
-                    response.body()?.responseEvent?.get(0)?.titulo.toString())
-
+                Log.e(TAG, "get evento on response ${response.body()
+                    ?.get(0)?.titulo.toString()}")
             }
+        })
+        //Get types of API
+        searchTypeCall.enqueue(object :Callback<List<TipoEventoDto>>{
+            override fun onFailure(call: Call<List<TipoEventoDto>>, t: Throwable) {
+                Log.e(TAG,"get TYPE on fail${t.message.toString()}")
+            }
+
+            override fun onResponse(
+                call: Call<List<TipoEventoDto>>,
+                response: Response<List<TipoEventoDto>>
+            ) {
+                var tipos = response.body()
+                Log.e(TAG, "Tipo ONFail")
+                for (tipo in tipos!! ){
+                    Log.e(TAG, tipo.idTipo.toString())
+                    Log.e(TAG, tipo.descricao)
+                    eventoRepository?.saveTipo(tipo)
+                }
+                Log.e(TAG,
+                    response.body()?.get(0)?.descricao.toString())
+            }
+
+
         })
     }
 }
