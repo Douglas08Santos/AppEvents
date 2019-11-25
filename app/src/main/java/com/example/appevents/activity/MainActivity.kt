@@ -4,18 +4,15 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.appevents.R
-import com.example.appevents.adapter.EventsListAdapter
 import com.example.appevents.commun.*
 import com.example.appevents.commun.PreferenceHelper.edit
 import com.example.appevents.fragment.FragmentEventsList
-import com.example.appevents.fragment.FragmentMap
 import com.example.appevents.model.EventoDto
 import com.example.appevents.model.TokenResponseModel
 import com.example.appevents.network.ApiService
@@ -36,15 +33,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val prefs = PreferenceHelper.defaultPrefs(this)
+        //cleanPrefs()
         val accessToken: String? = prefs[PREF_API_ACCESS_TOKEN]
-
-        /*
-        if (!Util.isNetworkAvailable()) {
-            Toast.makeText(this, getString(R.string.internet_connection_error), Toast.LENGTH_LONG).show()
-            return
-        }
-
-         */
 
         if (accessToken.isNullOrEmpty()) {
             getToken()
@@ -57,6 +47,16 @@ class MainActivity : AppCompatActivity() {
 
         updateList()
 
+    }
+
+    fun cleanPrefs(){
+        val prefs = PreferenceHelper.defaultPrefs(this)
+        prefs[PREF_API_ACCESS_TOKEN] = ""
+        prefs[PREF_API_TOKEN_TYPE] = ""
+
+        prefs[PREF_API_REFRESH_TOKEN] = ""
+        prefs[PREF_API_EXPIRES_IN] = ""
+        prefs[PREF_API_SCOPE] = ""
     }
 
     /*
@@ -76,13 +76,6 @@ class MainActivity : AppCompatActivity() {
         when (item?.itemId) {
             R.id.navigation_home -> {
                 Toast.makeText(this, "TODO", Toast.LENGTH_LONG).show()
-            }
-            R.id.navigation_dashboard -> {
-                var transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragmentContainer, FragmentMap())
-                transaction.addToBackStack(null)
-                transaction.commit()
-                return true
             }
             R.id.navigation_notifications -> {
                 var transaction = supportFragmentManager.beginTransaction()
@@ -104,7 +97,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getToken() {
-        val tokenCall = ApiService.instance.getToken(CLIENT_ID, 
+        val tokenCall = ApiService.instanceAuth.getToken(CLIENT_ID,
                     CLIENT_SECRET, GRANT_TYPE)
         tokenCall.enqueue(object :Callback<TokenResponseModel>{
             override fun onFailure(call: Call<TokenResponseModel>, t: Throwable) {

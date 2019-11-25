@@ -21,13 +21,20 @@ interface ApiService{
 
     @GET(SEARCH_EVENT_SUFFIX)
     fun getEventsList(
-        @Header("content-type") contentType: String,
-        @Header("authorization") authorization:String,
+        @Header("Authorization") authorization:String,
         @Header("x-api-key") apiKey:String
     ):Call<SearchResponseModel>
 
     companion object{
-        val instance: ApiService by lazy {
+        val instanceAuth: ApiService by lazy {
+            val retrofit = Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(BASE_URL_AUTH)
+                .build()
+
+            retrofit.create(ApiService::class.java)
+        }
+        val instanceGet: ApiService by lazy {
             val retrofit = Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(BASE_URL)

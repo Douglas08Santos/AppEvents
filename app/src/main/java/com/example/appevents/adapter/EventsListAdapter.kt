@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appevents.R
 import com.example.appevents.fragment.FragmentEventInfo
-import com.example.appevents.fragment.FragmentMap
 import com.example.appevents.model.EventoDto
 
 class EventsListAdapter(
@@ -50,28 +49,13 @@ class EventsListAdapter(
                         transaction.addToBackStack(null)
                         transaction.commit()
                     }
-                    R.id.btnItemMapa -> {
-                        if (eventos!![position]!!.latLocalizacao.toString() == "") {
-                            //Toast.makeText(this, "Sem Lat",
-                              //  Toast.LENGTH_SHORT).show()
-                        }
-                        val transaction = fragmentManager.beginTransaction()
-                        val fragment = FragmentMap()
-                        fragment.setMarkerToZoom(position)
-                        transaction.replace(R.id.fragmentContainer, fragment as Fragment)
-                        transaction.addToBackStack(null)
-                        transaction.commit()
-                        fragmentManager.executePendingTransactions()
-                    }
                 }
             }
         }
         init {
             txtTitulo = itemView.findViewById<View>(R.id.txtItemTitulo) as TextView
             val btnDescricao = itemView.findViewById<View>(R.id.btnItemDescricao) as Button
-            btnDescricao.setOnClickListener(this) // calling onClick() method
-            val btnMap = itemView.findViewById<View>(R.id.btnItemMapa) as Button
-            btnMap.setOnClickListener(this)
+            btnDescricao.setOnClickListener(this)
             itemView.setOnClickListener(this)
         }
     }

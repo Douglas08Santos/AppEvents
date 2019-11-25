@@ -32,17 +32,14 @@ class MyIntentService:IntentService("ServiceEvento") {
         }
 
         val prefs = PreferenceHelper.defaultPrefs(this)
-        Log.e("Evento14", "checando token")
         val accessToken: String? = prefs[PREF_API_ACCESS_TOKEN]
-        Log.e("Evento15", "token = $accessToken")
-        val searchCall = ApiService.instance
-            .getEventsList("application/json",
-                "Bearer $accessToken", "$X_API_KEY")
+        val searchCall = ApiService.instanceGet
+            .getEventsList(
+                "bearer $accessToken", "$X_API_KEY")
 
         searchCall.enqueue(object : Callback<SearchResponseModel> {
             override fun onFailure(call: Call<SearchResponseModel>, t: Throwable) {
 
-                Log.e("Evento16", "OnFailure")
                 Toast.makeText(applicationContext, getString(R.string.handle_api_token_error),
                     Toast.LENGTH_LONG)
                     .show()
@@ -50,10 +47,8 @@ class MyIntentService:IntentService("ServiceEvento") {
 
             override fun onResponse(call: Call<SearchResponseModel>,
                                     response: Response<SearchResponseModel>) {
-                Log.e("Evento16", "OnResponse")
                 var eventos = response.body()?.responseEvent
 
-                Log.e("Evento17", "Teste Evento = ${eventos?.get(0)!!.titulo}")
                 for (evento in eventos!! ){
                     eventoRepository?.save(evento)
                 }

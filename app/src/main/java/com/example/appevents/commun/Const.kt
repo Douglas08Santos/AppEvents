@@ -1,11 +1,11 @@
 package com.example.appevents.commun
 
 //Base URL
-const val BASE_URL = "https://autenticacao.info.ufrn.br/"
-
+const val BASE_URL_AUTH = "https://autenticacao.info.ufrn.br/"
+const val BASE_URL = "https://api.info.ufrn.br/"
 //Endpoints
 const val OAUTH2_TOKEN_SUFFIX = "authz-server/oauth/token"
-const val SEARCH_EVENT_SUFFIX = "evento"
+const val SEARCH_EVENT_SUFFIX = "evento/v1/eventos?ano=2019&ativo=true&limit=10"
 
 //API UFRN
 const val CLIENT_ID = "app-events-id"

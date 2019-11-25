@@ -7,23 +7,20 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class EventoDto(
-    @SerializedName("carga-horaria") val cargaHoraria:Int,
+    @SerializedName("id-evento") var id: Int,
+    val titulo:String,
     val descricao:String,
-    @SerializedName("fim-evento") val fimEvento:Int,
-    @SerializedName("id-tipo-evento") val idTipoEvento:Int,
     @SerializedName("inicio-evento") val inicioEvento:Int,
+    @SerializedName("fim-evento") val fimEvento:Int,
+    @SerializedName("localizacao") val localizacao:String,
     @SerializedName("lat-localizacao") val latLocalizacao:Int,
     @SerializedName("lng-localizacao") val lngLocalizacao:Int,
-    @SerializedName("localizacao") val localizacao:String,
+    @SerializedName("carga-horaria") val cargaHoraria:Int,
     @SerializedName("quantidade-vagas") val qtdVagas:Int,
-    val titulo:String
+    @SerializedName("id-tipo-evento") val idTipoEvento:Int
 
-):Parcelable, BaseListModel {
+):Parcelable{
 
-    override val type: Int
-        get() = BaseListModel.TYPE_TEXT
 
-    @IgnoredOnParcel
-    @SerializedName("id-evento") var id: Long = 0
     var favorite:Int = 0
 }

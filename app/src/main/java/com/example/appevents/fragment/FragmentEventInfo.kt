@@ -23,32 +23,32 @@ class FragmentEventInfo:Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_event_info, container, false)
         val titulo = view.findViewById<TextView>(R.id.txtEventoTitulo)
-        val inicio = view.findViewById<TextView>(R.id.txtEventoInicio)
         val descricao = view.findViewById<TextView>(R.id.txtEventoDescricao)
-        val local = view.findViewById<TextView>(R.id.txtEventoLocal)
-        val qtdvagas = view.findViewById<TextView>(R.id.txtEventoQtdVagas)
-        val carga = view.findViewById<TextView>(R.id.txtEventoCarga)
+        val inicio = view.findViewById<TextView>(R.id.txtEventoInicio)
         val fim = view.findViewById<TextView>(R.id.txtEventoFim)
+        val local = view.findViewById<TextView>(R.id.txtEventoLocal)
+        val carga = view.findViewById<TextView>(R.id.txtEventoCarga)
+        val qtdvagas = view.findViewById<TextView>(R.id.txtEventoQtdVagas)
 
         val favbutton = view.findViewById<Button>(R.id.btnFav)
         val activity = activity as MainActivity?
         val evento = activity!!.eventos!![eventIdOnList]
         //Favorite Button
-        /*
+
         favbutton.setOnClickListener {
-            activity.eventos?.drop(eventIdOnList)
-            val transaction = getActivity()!!.supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.fragmentContainer, FragmentLogi())
-            transaction.addToBackStack(null)
-            transaction.commit()
-        }*/
-        txtEventoTitulo.text = evento!!.titulo
-        txtEventoInicio.text = evento.inicioEvento.toString()
-        txtEventoDescricao.text = evento.descricao
-        txtEventoLocal.text = evento.localizacao
-        txtEventoQtdVagas.text = evento.qtdVagas.toString()
-        txtEventoCarga.text = evento.cargaHoraria.toString()
-        txtEventoFim.text = evento.fimEvento.toString()
+           if (evento.favorite == 1){
+               evento.favorite = 0
+           }else{
+               evento.favorite = 1
+           }
+        }
+        titulo.text = evento!!.titulo
+        descricao.text = evento.descricao
+        inicio.text = evento.inicioEvento.toString()
+        fim.text = evento.fimEvento.toString()
+        local.text = evento.localizacao
+        carga.text = evento.cargaHoraria.toString()
+        qtdvagas.text = evento.qtdVagas.toString()
 
         return view
     }
