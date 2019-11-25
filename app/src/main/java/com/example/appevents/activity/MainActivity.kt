@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
             MyIntentService::class.java))
         Log.e("Evento12", "criado service")
         eventoRepository = SQLiteRepository(this)
+        addEvent()
 
         updateList()
 
@@ -79,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.navigation_notifications -> {
                 var transaction = supportFragmentManager.beginTransaction()
-                transaction.replace(R.id.fragmentContainer, FragmentEventsList() as Fragment)
+                transaction.replace(R.id.fragmentContainer, FragmentEventsList())
                 transaction.addToBackStack(null)
                 transaction.commit()
                 return true
@@ -122,6 +123,26 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    fun addEvent(){
+        for(i in 0..10){
+            var id = i
+            val titulo = "titulo " + i.toString()
+            val descricao = "descricao" + i.toString()
+            val inicioEvento = i*5
+            val fimEvento = i*6
+            val localizacao = "localizacao" + i.toString()
+            val latLocalizacao = i*7
+            val lngLocalizacao = i*8
+            val cargaHoraria = i*9
+            val qtdVagas = i*10
+            val idTipoEvento = i*11
+
+            var evento = EventoDto(id, titulo, descricao, inicioEvento, fimEvento, localizacao,
+                latLocalizacao, lngLocalizacao, cargaHoraria, qtdVagas, idTipoEvento)
+
+            eventos?.add(evento)
+        }
+    }
 
 }
 
