@@ -1,9 +1,7 @@
 package com.example.appevents.network
 
 
-import com.example.appevents.commun.BASE_URL
-import com.example.appevents.commun.OAUTH2_TOKEN_SUFFIX
-import com.example.appevents.commun.SEARCH_EVENT_SUFFIX
+import com.example.appevents.commun.*
 import com.example.appevents.model.SearchResponseModel
 import com.example.appevents.model.TokenResponseModel
 import retrofit2.Call
@@ -16,14 +14,16 @@ interface ApiService{
     @FormUrlEncoded
     @POST(OAUTH2_TOKEN_SUFFIX)
     fun getToken(
-        @Header("authorization") authorization:String,
+        @Field("client_id") clientId:String,
+        @Field("client_secret") clientSecret:String,
         @Field("grant_type") grantType:String
     ):Call<TokenResponseModel>
 
     @GET(SEARCH_EVENT_SUFFIX)
     fun getEventsList(
+        @Header("content-type") contentType: String,
         @Header("authorization") authorization:String,
-        @Query("q") queryText:String
+        @Header("x-api-key") apiKey:String
     ):Call<SearchResponseModel>
 
     companion object{

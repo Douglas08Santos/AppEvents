@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">AppEvents</string>
+    <string name="internet_connection_error">Check your Internet connection</string>
+    <string name="handle_api_token_error">TODO API Token</string>
+    <string name="hello_fragment">Hello fragment</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_login">Login</string>
+    <string name="title_map">Map</string>
+    <string name="title_events_list">List</string>
 </resources>

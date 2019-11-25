@@ -15,4 +15,6 @@ const val COLUMN_LNG_LOCAL = "lngLocalizacao"
 const val COLUMN_LOCAL = "localizacao"
 const val COLUMN_QTD_VAGAS = "qtdVagas"
 const val COLUMN_TITULO = "titulo"
+const val COLUMN_FAVORITE = "favorite"
+
 

@@ -2,6 +2,7 @@ package com.example.appevents.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -22,5 +23,7 @@ class EventoDto(
     override val type: Int
         get() = BaseListModel.TYPE_TEXT
 
+    @IgnoredOnParcel
     @SerializedName("id-evento") var id: Long = 0
+    var favorite:Int = 0
 }

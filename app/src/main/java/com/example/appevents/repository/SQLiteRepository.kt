@@ -58,11 +58,24 @@ class SQLiteRepository(context: Context): EventoRepository{
     }
 
     override fun list(callback: (MutableList<EventoDto>) -> Unit) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        var sql = "SELECT * FROM $TABLE_NAME"
+        var args: Array<String>? = null
+
+        sql += " ORDER BY $COLUMN_ID"
+        val db = helper.readableDatabase
+        val cursor = db.rawQuery(sql, args)
+        val eventos = ArrayList<EventoDto>()
+        while (cursor.moveToNext()){
+            val evento = eventoDtoFromCursor(cursor)
+            eventos.add(evento)
+        }
+        cursor.close()
+        db.close()
+
+        callback(eventos)
     }
 
     private fun eventoDtoFromCursor(cursor: Cursor): EventoDto {
-        val id = cursor.getLong(cursor.getColumnIndex(COLUMN_ID))
         val cargaHoraria = cursor.getInt(cursor.getColumnIndex(COLUMN_CARGA_HORARIA))
         val descricao = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRICAO))
         val fimEvento = cursor.getInt(cursor.getColumnIndex(COLUMN_FIM_EVENTO))
@@ -74,7 +87,9 @@ class SQLiteRepository(context: Context): EventoRepository{
         val qtdVagas = cursor.getInt(cursor.getColumnIndex(COLUMN_QTD_VAGAS))
         val titulo = cursor.getString(cursor.getColumnIndex(COLUMN_TITULO))
 
-        return EventoDto(cargaHoraria, descricao, fimEvento, idTipoEvento, inicioEvento,
+        var evento = EventoDto(cargaHoraria, descricao, fimEvento, idTipoEvento, inicioEvento,
             latLocalizacao, lngLocalizacao, localizacao, qtdVagas, titulo)
+        evento.favorite = cursor.getInt(cursor.getColumnIndex(COLUMN_FAVORITE))
+        return evento
     }
 }
